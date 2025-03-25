@@ -72,11 +72,20 @@ int MEDIANFILTER_Insert(sMedianFilter_t *medianFilter, int sample)
         it = it->nextValue;
     }
 
-    //insert new node in list
-    it->prevValue->nextValue = newNode;
-    newNode->prevValue = it->prevValue;
-    it->prevValue = newNode;
-    newNode->nextValue = it;
+    // Insert new node in list
+    if (i < medianFilter->numNodes - 1) {
+        // Insert before it
+        it->prevValue->nextValue = newNode;
+        newNode->prevValue = it->prevValue;
+        it->prevValue = newNode;
+        newNode->nextValue = it;
+    } else {
+        // Insert after it (last node)
+        newNode->prevValue = it;
+        newNode->nextValue = it->nextValue;
+        it->nextValue = newNode;
+        newNode->nextValue->prevValue = newNode;
+    }
 
     //adjust median node
     if(i >= (medianFilter->numNodes / 2))
